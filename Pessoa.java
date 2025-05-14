@@ -14,5 +14,14 @@ public class Cliente extends Pessoa {
 }
 
 public class Funcionario extends Pessoa {
-    protected
+    protected String cargo;
+
+}
+public class Veterinario extends Funcionario {
+    private String nome;
+    private String especialidade;
+}
+public class Recepcionista extends Funcionario {
+    private Boolean turno;
+    
 }
