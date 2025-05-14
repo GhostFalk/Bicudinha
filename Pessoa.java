@@ -14,5 +14,5 @@ public class Cliente extends Pessoa {
 }
 
 public class Funcionario extends Pessoa {
-    protected 
+    protected
 }
