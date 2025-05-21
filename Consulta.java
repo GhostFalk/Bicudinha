@@ -6,3 +6,5 @@ public class Consulta {
     private String diagnostico;
     private boolean foiRetorno;
 }
+
+
