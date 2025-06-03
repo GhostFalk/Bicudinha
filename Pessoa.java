@@ -6,51 +6,24 @@ public abstract class Pessoa {
     protected String email;
     protected String cpf;
     protected String telefone;
-}
 
-public Pessoa(String nome, String email, String cpf, String telefone) {
-    this.nome = nome;
-    this.email = email;
-    this.cpf = cpf;
-    this.telefone = telefone;
-}
-
-public abstract void exibirDados();
-}
-
-class Cliente extends Pessoa {
-    private LocalDate dataCadastro;
-    private ArrayList<Animal> listaAnimais = new ArrayList<>();
-
-    public Cliente(String nome, String email, String cpf, String telefone) {
-        super(nome, email, cpf, telefone);
-        this.dataCadastro = LocalDate.now();
-    }
-
-    public void adicionarAnimal(Animal animal) {
-        listaAnimais.add(animal);
-    }
-
-    public void removerAnimal(String nomeAnimal) {
-        listaAnimais.removeIf(a -> a.getNome().equalsIgnoreCase(nomeAnimal));
-    }
-
-    public void listarAnimais() {
-        for (Animal a : listaAnimais) {
-            a.exibirFicha();
-        }
-    }
-
-    public void editarDados(String telefone, String email) {
-        this.telefone = telefone;
+    public Pessoa(String nome, String email, String cpf, String telefone) {
+        this.nome = nome;
         this.email = email;
+        this.cpf = cpf;
+        this.telefone = telefone;
     }
 
-    @Override
-    public void exibirDados() {
-        System.out.println("Cliente: " + nome + " | CPF: " + cpf + " | Email: " + email);
+    public String getNome() {
+        return nome;
     }
+
+    public abstract void exibirDados();
 }
+
+// ---------------------- Cliente ----------------------
+
+// ---------------------- Funcionario ----------------------
 
 class Funcionario extends Pessoa {
     protected String cargo;
@@ -69,6 +42,8 @@ class Funcionario extends Pessoa {
         System.out.println("Funcionário: " + nome + " | Cargo: " + cargo);
     }
 }
+
+// ---------------------- Veterinario ----------------------
 
 class Veterinario extends Funcionario {
     private String crmv;
@@ -92,11 +67,9 @@ class Veterinario extends Funcionario {
     public void prescreverTratamento(Animal animal, String descricao) {
         System.out.println("Tratamento para " + animal.getNome() + ": " + descricao);
     }
-
-    public String getNome() {
-        return nome;
-    }
 }
+
+// ---------------------- Recepcionista ----------------------
 
 class Recepcionista extends Funcionario {
     private boolean turno;
