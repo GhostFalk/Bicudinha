@@ -18,8 +18,25 @@ public abstract class Pessoa {
         return nome;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
     public abstract void exibirDados();
 }
+
 
 // ---------------------- Cliente ----------------------
 
@@ -33,8 +50,20 @@ class Funcionario extends Pessoa {
         this.cargo = cargo;
     }
 
-    public void registrarPonto() {
-        System.out.println(nome + " registrou ponto como " + cargo);
+    public String getTipo() {
+        return cargo;
+    }
+
+    public void setTipo(String tipo) {
+        this.cargo = tipo;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     @Override
@@ -45,6 +74,8 @@ class Funcionario extends Pessoa {
 
 // ---------------------- Veterinario ----------------------
 
+// ---------------------- Veterinario ----------------------
+
 class Veterinario extends Funcionario {
     private String crmv;
     private String especialidade;
@@ -52,6 +83,22 @@ class Veterinario extends Funcionario {
     public Veterinario(String nome, String email, String cpf, String telefone, String crmv, String especialidade) {
         super(nome, email, cpf, telefone, "Veterinário");
         this.crmv = crmv;
+        this.especialidade = especialidade;
+    }
+
+    public String getCrmv() {
+        return crmv;
+    }
+
+    public void setCrmv(String crmv) {
+        this.crmv = crmv;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
+    }
+
+    public void setEspecialidade(String especialidade) {
         this.especialidade = especialidade;
     }
 
@@ -69,13 +116,22 @@ class Veterinario extends Funcionario {
     }
 }
 
+
 // ---------------------- Recepcionista ----------------------
 
 class Recepcionista extends Funcionario {
-    private boolean turno;
+    private boolean turno; // true = manhã, false = tarde
 
     public Recepcionista(String nome, String email, String cpf, String telefone, boolean turno) {
         super(nome, email, cpf, telefone, "Recepcionista");
+        this.turno = turno;
+    }
+
+    public String getTurno() {
+        return turno ? "Manhã" : "Tarde";
+    }
+
+    public void setTurno(boolean turno) {
         this.turno = turno;
     }
 
@@ -93,3 +149,4 @@ class Recepcionista extends Funcionario {
         System.out.println("Próximo cliente, por favor!");
     }
 }
+
