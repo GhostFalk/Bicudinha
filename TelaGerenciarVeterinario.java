@@ -4,19 +4,23 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class TelaGerenciarVeterinario extends JFrame {
+    // Componentes
     private JComboBox<String> comboSugestoes;
     private JTextField campoBuscaCrmv;
     private JTextField campoNome, campoEmail, campoCrmv, campoTelefone;
     private JComboBox<String> campoEspecialidade;
     private JButton botaoAtualizar, botaoExcluir;
+
+    // Lista de veterinários
     private ArrayList<Veterinario> listaVeterinarios;
 
+    // Construtor da tela
     public TelaGerenciarVeterinario(ArrayList<Veterinario> veterinarios) {
         listaVeterinarios = veterinarios;
 
         setTitle("🐾 Gerenciar Veterinários");
         setSize(800, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -40,68 +44,53 @@ public class TelaGerenciarVeterinario extends JFrame {
         painelPrincipal.add(titulo);
         painelPrincipal.add(Box.createVerticalStrut(10));
 
+        // Painel de busca por CRMV
         JPanel painelBusca = new JPanel(new GridBagLayout());
         painelBusca.setBackground(corFundo);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel lblCrmv = new JLabel("Digite CRMV:");
         lblCrmv.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
+
         campoBuscaCrmv = new JTextField(20);
         campoBuscaCrmv.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        campoBuscaCrmv.setFocusable(true);
 
         comboSugestoes = new JComboBox<>();
         comboSugestoes.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         comboSugestoes.setMaximumRowCount(5);
-        comboSugestoes.addItem("Selecione um veterinário...");
-        comboSugestoes.setVisible(true);
+        comboSugestoes.setVisible(false);
 
         Dimension mesmoTamanho = new Dimension(250, 30);
-
         campoBuscaCrmv.setPreferredSize(mesmoTamanho);
-        campoBuscaCrmv.setMinimumSize(mesmoTamanho);
-        campoBuscaCrmv.setMaximumSize(mesmoTamanho);
-
         comboSugestoes.setPreferredSize(mesmoTamanho);
-        comboSugestoes.setMinimumSize(mesmoTamanho);
-        comboSugestoes.setMaximumSize(mesmoTamanho);
 
         gbc.gridx = 0; gbc.gridy = 0;
         painelBusca.add(lblCrmv, gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.gridy = 0;
         painelBusca.add(campoBuscaCrmv, gbc);
         gbc.gridx = 1; gbc.gridy = 1;
         painelBusca.add(comboSugestoes, gbc);
 
-        // Força atualização do layout
-        painelBusca.revalidate();
-        painelBusca.repaint();
-
         painelPrincipal.add(painelBusca);
 
+        // Formulário
         JPanel painelFormulario = new JPanel(new GridLayout(6, 2, 10, 10));
         painelFormulario.setMaximumSize(new Dimension(600, 250));
         painelFormulario.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
         painelFormulario.setBackground(corFormulario);
 
-        campoNome = new JTextField();
-        campoNome.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        campoNome.setEditable(false);
+        campoNome = new JTextField(); campoNome.setFont(new Font("Comic Sans MS", Font.PLAIN, 18)); campoNome.setEditable(false);
+        campoEmail = new JTextField(); campoEmail.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
+        campoCrmv = new JTextField(); campoCrmv.setFont(new Font("Comic Sans MS", Font.PLAIN, 18)); campoCrmv.setEditable(false);
+        campoTelefone = new JTextField(); campoTelefone.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
 
-        campoEmail = new JTextField();
-        campoEmail.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-
-        campoCrmv = new JTextField();
-        campoCrmv.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-        campoCrmv.setEditable(false);
-
-        campoEspecialidade = new JComboBox<>(new String[]{
+        campoEspecialidade = new JComboBox<>(new String[] {
                 "-- Selecione --", "Clínica Geral", "Cirurgia Geral", "Dermatologia", "Odontologia", "Oftalmologia", "Atendimento a Exóticos"
         });
         campoEspecialidade.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-
-        campoTelefone = new JTextField();
-        campoTelefone.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
 
         painelFormulario.add(new JLabel("Nome:")); painelFormulario.add(campoNome);
         painelFormulario.add(new JLabel("Email:")); painelFormulario.add(campoEmail);
@@ -111,6 +100,7 @@ public class TelaGerenciarVeterinario extends JFrame {
 
         painelPrincipal.add(painelFormulario);
 
+        // Botões
         JPanel painelBotoes = new JPanel();
         painelBotoes.setBackground(corFundo);
         botaoAtualizar = new JButton("Atualizar");
@@ -126,6 +116,7 @@ public class TelaGerenciarVeterinario extends JFrame {
         painelBotoes.add(botaoExcluir);
         painelPrincipal.add(painelBotoes);
 
+        // Imagens de rodapé
         JPanel painelInferior = new JPanel(new BorderLayout());
         painelInferior.setBackground(corFundo);
         painelInferior.add(new JLabel(new ImageIcon(new ImageIcon("hamster.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH))), BorderLayout.WEST);
@@ -135,6 +126,7 @@ public class TelaGerenciarVeterinario extends JFrame {
 
         add(painelPrincipal);
 
+        // Evento de digitação no CRMV
         campoBuscaCrmv.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 String texto = campoBuscaCrmv.getText().trim();
@@ -145,11 +137,15 @@ public class TelaGerenciarVeterinario extends JFrame {
                         comboSugestoes.addItem(v.getCrmv() + " - " + v.getNome());
                     }
                 }
-                comboSugestoes.setVisible(true);
-                comboSugestoes.showPopup();
+                comboSugestoes.setVisible(comboSugestoes.getItemCount() > 1);
+                if (comboSugestoes.isVisible()) {
+                    comboSugestoes.showPopup();
+                }
+                campoBuscaCrmv.requestFocusInWindow();
             }
         });
 
+        // Evento de seleção no combo
         comboSugestoes.addActionListener(e -> {
             String selecionado = (String) comboSugestoes.getSelectedItem();
             if (selecionado != null && !selecionado.equals("Selecione um veterinário...")) {
@@ -167,6 +163,7 @@ public class TelaGerenciarVeterinario extends JFrame {
             }
         });
 
+        // Botão atualizar
         botaoAtualizar.addActionListener(e -> {
             String crmvBusca = campoCrmv.getText().trim();
             for (Veterinario v : listaVeterinarios) {
@@ -175,12 +172,14 @@ public class TelaGerenciarVeterinario extends JFrame {
                     v.setEspecialidade((String) campoEspecialidade.getSelectedItem());
                     v.setTelefone(campoTelefone.getText());
                     JOptionPane.showMessageDialog(this, "Dados atualizados com sucesso!");
+                    CSVUtils.salvarCSV("veterinarios.csv", listaVeterinarios);
                     return;
                 }
             }
             JOptionPane.showMessageDialog(this, "Veterinário não encontrado.");
         });
 
+        // Botão excluir
         botaoExcluir.addActionListener(e -> {
             String crmvBusca = campoCrmv.getText().trim();
             Veterinario remover = null;
@@ -198,18 +197,11 @@ public class TelaGerenciarVeterinario extends JFrame {
                     campoEspecialidade.setSelectedIndex(0); campoTelefone.setText(""); campoBuscaCrmv.setText("");
                     comboSugestoes.removeAllItems(); comboSugestoes.setVisible(false);
                     JOptionPane.showMessageDialog(this, "Veterinário removido.");
+                    CSVUtils.salvarCSV("veterinarios.csv", listaVeterinarios);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Veterinário não encontrado.");
             }
         });
-    }
-
-    public static void main(String[] args) {
-        ArrayList<Veterinario> lista = new ArrayList<>();
-        lista.add(new Veterinario("Marina", "marina@email.com", "123.456.789-00", "11988887777", "12345", "Cirurgia Geral"));
-        lista.add(new Veterinario("Nicolas", "nicolas@email.com", "987.654.321-00", "11999998888", "67890", "Dermatologia"));
-
-        SwingUtilities.invokeLater(() -> new TelaGerenciarVeterinario(lista).setVisible(true));
     }
 }
