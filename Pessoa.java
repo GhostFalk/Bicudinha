@@ -1,18 +1,22 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+// ---------------------- Pessoa (classe abstrata base) ----------------------
 public abstract class Pessoa {
     protected String nome;
     protected String email;
     protected String cpf;
     protected String telefone;
 
+    // Construtor
     public Pessoa(String nome, String email, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
         this.telefone = telefone;
     }
+
+    // Getters e Setters
 
     public String getNome() {
         return nome;
@@ -30,40 +34,39 @@ public abstract class Pessoa {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getTelefone() {
         return telefone;
     }
 
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    // Metodo abstrato que deve ser implementado pelas subclasses
     public abstract void exibirDados();
 }
 
-
-// ---------------------- Cliente ----------------------
-
 // ---------------------- Funcionario ----------------------
-
 class Funcionario extends Pessoa {
     protected String cargo;
 
+    //Metodo Construtor Funcionário
     public Funcionario(String nome, String email, String cpf, String telefone, String cargo) {
         super(nome, email, cpf, telefone);
         this.cargo = cargo;
     }
 
+    //Metodo Get e Set
     public String getTipo() {
         return cargo;
     }
 
     public void setTipo(String tipo) {
         this.cargo = tipo;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
     }
 
     @Override
@@ -73,19 +76,18 @@ class Funcionario extends Pessoa {
 }
 
 // ---------------------- Veterinario ----------------------
-
-// ---------------------- Veterinario ----------------------
-
 class Veterinario extends Funcionario {
     private String crmv;
     private String especialidade;
 
+    //Metodo Contrutor
     public Veterinario(String nome, String email, String cpf, String telefone, String crmv, String especialidade) {
         super(nome, email, cpf, telefone, "Veterinário");
         this.crmv = crmv;
         this.especialidade = especialidade;
     }
 
+    //Getters e Setters
     public String getCrmv() {
         return crmv;
     }
@@ -114,18 +116,37 @@ class Veterinario extends Funcionario {
     public void prescreverTratamento(Animal animal, String descricao) {
         System.out.println("Tratamento para " + animal.getNome() + ": " + descricao);
     }
+
+    // Converte os dados do veterinário para formato CSV
+    public String toCSV() {
+        return nome + ";" + email + ";" + cpf + ";" + telefone + ";" + crmv + ";" + especialidade;
+    }
+
+    // Cria veterinário a partir de linha CSV
+    public static Veterinario fromCSV(String linha) {
+        String[] partes = linha.split(";");
+        if (partes.length < 6) return null;
+        return new Veterinario(partes[0], partes[1], partes[2], partes[3], partes[4], partes[5]);
+    }
+
+    // Usa toCSV para salvar em arquivos
+    @Override
+    public String toString() {
+        return toCSV();
+    }
 }
 
-
 // ---------------------- Recepcionista ----------------------
-
 class Recepcionista extends Funcionario {
     private boolean turno; // true = manhã, false = tarde
 
+    //Metodo Contrututor Recepcionista
     public Recepcionista(String nome, String email, String cpf, String telefone, boolean turno) {
         super(nome, email, cpf, telefone, "Recepcionista");
         this.turno = turno;
     }
+
+    //Get e Set
 
     public String getTurno() {
         return turno ? "Manhã" : "Tarde";
@@ -138,7 +159,7 @@ class Recepcionista extends Funcionario {
     @Override
     public void exibirDados() {
         String turnoStr = turno ? "Manhã" : "Tarde";
-        System.out.println("Recepcionista: " + nome + " | Turno: " + turnoStr);
+        System.out.println("Recepcionista: " + getNome() + " | Turno: " + turnoStr);
     }
 
     public void agendarConsulta(Consulta consulta) {
@@ -148,5 +169,21 @@ class Recepcionista extends Funcionario {
     public void chamarCliente() {
         System.out.println("Próximo cliente, por favor!");
     }
-}
 
+    // Converte recepcionista em formato CSV
+    public String toCSV() {
+        return nome + ";" + email + ";" + cpf + ";" + telefone + ";" + (turno ? "true" : "false");
+    }
+
+    // Cria recepcionista a partir de CSV
+    public static Recepcionista fromCSV(String linha) {
+        String[] partes = linha.split(";");
+        boolean turno = Boolean.parseBoolean(partes[4]);
+        return new Recepcionista(partes[0], partes[1], partes[2], partes[3], turno);
+    }
+
+    @Override
+    public String toString() {
+        return toCSV();
+    }
+}
