@@ -1,10 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class TelaGerenciarAnimais extends JFrame {
-    // Campos de busca e formulário
     private JComboBox<String> comboSugestoes;
     private JTextField campoBuscaNome;
     private JTextField campoNome, campoEspecie, campoRaca, campoIdade, campoPeso, campoSexo, campoDono;
@@ -15,38 +16,32 @@ public class TelaGerenciarAnimais extends JFrame {
     public TelaGerenciarAnimais(ArrayList<Animal> animais) {
         listaAnimais = animais;
 
-        // Configurações da janela
         setTitle("🐾 Gerenciar Animais");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Cores
         Color corFundo = new Color(106, 207, 207);
         Color corFormulario = new Color(180, 230, 230);
         Color corBotaoAtualizar = new Color(145, 205, 144);
         Color corBotaoExcluir = new Color(237, 115, 110);
 
-        // Painel principal com layout vertical
         JPanel painelPrincipal = new JPanel();
         painelPrincipal.setLayout(new BoxLayout(painelPrincipal, BoxLayout.Y_AXIS));
         painelPrincipal.setBackground(corFundo);
 
-        // Imagem
         JLabel imagemTopo = new JLabel(new ImageIcon(new ImageIcon("gatinho.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
         imagemTopo.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelPrincipal.add(Box.createVerticalStrut(10));
         painelPrincipal.add(imagemTopo);
 
-        // Título da tela
         JLabel titulo = new JLabel("Gerenciar Animais");
         titulo.setFont(new Font("Comic Sans MS", Font.BOLD, 26));
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelPrincipal.add(titulo);
         painelPrincipal.add(Box.createVerticalStrut(10));
 
-        // 🔍 Painel de busca com sugestão de nomes
         JPanel painelBusca = new JPanel(new GridBagLayout());
         painelBusca.setBackground(corFundo);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -64,12 +59,10 @@ public class TelaGerenciarAnimais extends JFrame {
         comboSugestoes.addItem("Selecione um animal...");
         comboSugestoes.setVisible(true);
 
-        // Tamanhos iguais para campos de busca
         Dimension mesmoTamanho = new Dimension(250, 30);
         campoBuscaNome.setPreferredSize(mesmoTamanho);
         comboSugestoes.setPreferredSize(mesmoTamanho);
 
-        // Adiciona campos ao painel de busca
         gbc.gridx = 0; gbc.gridy = 0;
         painelBusca.add(lblNome, gbc);
         gbc.gridx = 1;
@@ -78,7 +71,6 @@ public class TelaGerenciarAnimais extends JFrame {
         painelBusca.add(comboSugestoes, gbc);
         painelPrincipal.add(painelBusca);
 
-        // Painel de formulário com dados do animal
         JPanel painelFormulario = new JPanel(new GridLayout(8, 2, 10, 10));
         painelFormulario.setMaximumSize(new Dimension(600, 300));
         painelFormulario.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
@@ -86,7 +78,6 @@ public class TelaGerenciarAnimais extends JFrame {
 
         Font fonte = new Font("Comic Sans MS", Font.PLAIN, 18);
 
-        // Campos do formulário
         campoNome = new JTextField(); campoNome.setFont(fonte); campoNome.setEditable(false);
         campoEspecie = new JTextField(); campoEspecie.setFont(fonte); campoEspecie.setEditable(false);
         campoRaca = new JTextField(); campoRaca.setFont(fonte);
@@ -96,7 +87,6 @@ public class TelaGerenciarAnimais extends JFrame {
         campoDono = new JTextField(); campoDono.setFont(fonte); campoDono.setEditable(false);
         checkVacinado = new JCheckBox(); checkVacinado.setBackground(corFormulario);
 
-        // Adiciona campos ao painel
         painelFormulario.add(new JLabel("Nome do animal:")); painelFormulario.add(campoNome);
         painelFormulario.add(new JLabel("Espécie:")); painelFormulario.add(campoEspecie);
         painelFormulario.add(new JLabel("Raça:")); painelFormulario.add(campoRaca);
@@ -107,7 +97,6 @@ public class TelaGerenciarAnimais extends JFrame {
         painelFormulario.add(new JLabel("Vacinado:")); painelFormulario.add(checkVacinado);
         painelPrincipal.add(painelFormulario);
 
-        // Botões de ação (Atualizar e Excluir)
         JPanel painelBotoes = new JPanel();
         painelBotoes.setBackground(corFundo);
         botaoAtualizar = new JButton("Atualizar");
@@ -123,7 +112,6 @@ public class TelaGerenciarAnimais extends JFrame {
         painelBotoes.add(botaoExcluir);
         painelPrincipal.add(painelBotoes);
 
-        // Imagem
         JPanel painelInferior = new JPanel(new BorderLayout());
         painelInferior.setBackground(corFundo);
         painelInferior.add(new JLabel(new ImageIcon(new ImageIcon("hamster.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH))), BorderLayout.WEST);
@@ -133,7 +121,6 @@ public class TelaGerenciarAnimais extends JFrame {
 
         add(painelPrincipal);
 
-        // Busca por nome e sugestões automáticas
         campoBuscaNome.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 String texto = campoBuscaNome.getText().trim().toLowerCase();
@@ -150,7 +137,6 @@ public class TelaGerenciarAnimais extends JFrame {
             }
         });
 
-        // Carregar dados do animal selecionado
         comboSugestoes.addActionListener(e -> {
             String nomeSelecionado = (String) comboSugestoes.getSelectedItem();
             if (nomeSelecionado != null && !nomeSelecionado.equals("Selecione um animal...")) {
@@ -170,7 +156,6 @@ public class TelaGerenciarAnimais extends JFrame {
             }
         });
 
-        // Atualizar dados do animal
         botaoAtualizar.addActionListener(e -> {
             String nomeBusca = campoNome.getText().trim();
             for (Animal a : listaAnimais) {
@@ -180,7 +165,8 @@ public class TelaGerenciarAnimais extends JFrame {
                         a.setIdade(Integer.parseInt(campoIdade.getText()));
                         a.setPeso(Double.parseDouble(campoPeso.getText()));
                         a.setVacinado(checkVacinado.isSelected());
-                        CSVUtils.salvarCSV("animais.csv", listaAnimais); // Salva alterações
+                        CSVUtils.salvarCSV("animais.csv", listaAnimais);
+                        salvarSerializado("animais.ser", listaAnimais);
                         JOptionPane.showMessageDialog(this, "Dados atualizados!");
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Idade ou peso inválido!");
@@ -191,7 +177,6 @@ public class TelaGerenciarAnimais extends JFrame {
             JOptionPane.showMessageDialog(this, "Animal não encontrado.");
         });
 
-        // Excluir animal
         botaoExcluir.addActionListener(e -> {
             String nomeBusca = campoNome.getText().trim();
             Animal remover = null;
@@ -205,7 +190,8 @@ public class TelaGerenciarAnimais extends JFrame {
                 int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este animal?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     listaAnimais.remove(remover);
-                    CSVUtils.salvarCSV("animais.csv", listaAnimais); // Salva exclusão
+                    CSVUtils.salvarCSV("animais.csv", listaAnimais);
+                    salvarSerializado("animais.ser", listaAnimais);
                     limparCampos();
                     comboSugestoes.removeAllItems();
                     comboSugestoes.setVisible(false);
@@ -217,7 +203,6 @@ public class TelaGerenciarAnimais extends JFrame {
         });
     }
 
-    //Limpa os campos da tela
     private void limparCampos() {
         campoNome.setText("");
         campoEspecie.setText("");
@@ -227,5 +212,15 @@ public class TelaGerenciarAnimais extends JFrame {
         campoSexo.setText("");
         campoDono.setText("");
         checkVacinado.setSelected(false);
+    }
+
+    // Novo metodo para salvar a lista serializada
+    private void salvarSerializado(String nomeArquivo, Object objeto) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomeArquivo))) {
+            oos.writeObject(objeto);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar arquivo serializado.");
+            e.printStackTrace();
+        }
     }
 }

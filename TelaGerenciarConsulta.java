@@ -13,6 +13,8 @@ public class TelaGerenciarConsulta extends JFrame {
     private JTextField campoDiagnosticoEdit;
     private JTextField campoMedicamentoEdit;
 
+    private final String CAMINHO_SERIALIZADO = "consultas.ser";
+
     public TelaGerenciarConsulta(ArrayList<Consulta> listaConsultas) {
         this.consultas = listaConsultas;
 
@@ -30,27 +32,24 @@ public class TelaGerenciarConsulta extends JFrame {
         painelPrincipal.setLayout(new BorderLayout());
         painelPrincipal.setBackground(corFundo);
 
-        // Título da janela
         JLabel titulo = new JLabel("Consultas Realizadas", SwingConstants.CENTER);
         titulo.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
         titulo.setForeground(new Color(65, 52, 40));
         titulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         painelPrincipal.add(titulo, BorderLayout.NORTH);
 
-        // Configuração da tabela
         String[] colunas = {"Animal", "Veterinário", "Data e Hora", "Diagnóstico", "Retorno", "Medicamento"};
         modeloTabela = new DefaultTableModel(colunas, 0) {
             public boolean isCellEditable(int row, int column) {
-                return false; // Torna todas as células não editáveis
+                return false;
             }
         };
 
         tabelaConsultas = new JTable(modeloTabela);
         tabelaConsultas.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        tabelaConsultas.setRowHeight(100); // Altura padrão
+        tabelaConsultas.setRowHeight(100);
         tabelaConsultas.getTableHeader().setFont(new Font("Comic Sans MS", Font.BOLD, 15));
 
-        // Customiza o renderizador para exibir textos com quebra de linha
         tabelaConsultas.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -74,7 +73,6 @@ public class TelaGerenciarConsulta extends JFrame {
         JScrollPane scroll = new JScrollPane(tabelaConsultas);
         painelPrincipal.add(scroll, BorderLayout.CENTER);
 
-        // Painel para edição dos campos de diagnóstico e medicamento
         JPanel painelEditar = new JPanel(new GridLayout(2, 2, 10, 10));
         painelEditar.setBackground(corFundo);
         painelEditar.setBorder(BorderFactory.createEmptyBorder(15, 30, 10, 30));
@@ -91,7 +89,6 @@ public class TelaGerenciarConsulta extends JFrame {
 
         painelPrincipal.add(painelEditar, BorderLayout.NORTH);
 
-        // Botões de ação
         JButton botaoExcluir = new JButton("Excluir Consulta");
         botaoExcluir.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         botaoExcluir.setBackground(corBotaoExcluir);
@@ -116,7 +113,6 @@ public class TelaGerenciarConsulta extends JFrame {
         atualizarTabela();
     }
 
-    // Preenche a tabela com os dados das consultas
     private void atualizarTabela() {
         modeloTabela.setRowCount(0);
 
@@ -129,7 +125,7 @@ public class TelaGerenciarConsulta extends JFrame {
 
             modeloTabela.addRow(new Object[]{
                     c.getAnimal().getNome(),
-                    c.getVeterinario().getNome() + " - " + c.getVeterinario().getCrmv(), // <-- aqui
+                    c.getVeterinario().getNome() + " - " + c.getVeterinario().getCrmv(),
                     dataFormatada + " às " + horaFormatada,
                     c.getDiagnostico(),
                     c.isFoiRetorno() ? "Sim" : "Não",
@@ -138,7 +134,6 @@ public class TelaGerenciarConsulta extends JFrame {
         }
     }
 
-    // Remove a consulta selecionada
     private void excluirConsulta() {
         int linha = tabelaConsultas.getSelectedRow();
         if (linha >= 0) {
@@ -146,14 +141,15 @@ public class TelaGerenciarConsulta extends JFrame {
                     "Deseja realmente excluir esta consulta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
             if (confirmar == JOptionPane.YES_OPTION) {
                 consultas.remove(linha);
+                PersistenciaUtils.salvarLista(CAMINHO_SERIALIZADO, consultas);
                 atualizarTabela();
+                JOptionPane.showMessageDialog(this, "Consulta excluída com sucesso!");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma linha para excluir.");
         }
     }
 
-    // Edita os dados da consulta selecionada
     private void editarConsulta() {
         int linha = tabelaConsultas.getSelectedRow();
         if (linha >= 0) {
@@ -168,6 +164,7 @@ public class TelaGerenciarConsulta extends JFrame {
             Consulta c = consultas.get(linha);
             c.editarConsulta(novoDiag);
             c.setMedicamento(novoMed);
+            PersistenciaUtils.salvarLista(CAMINHO_SERIALIZADO, consultas);
             atualizarTabela();
             JOptionPane.showMessageDialog(this, "Consulta atualizada com sucesso!");
             campoDiagnosticoEdit.setText("");

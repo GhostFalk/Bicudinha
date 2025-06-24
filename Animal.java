@@ -1,6 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Animal {
-    // Atributos privados com encapsulamento
+
+// Classe que representa um animal da clínica
+public class Animal implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Atributos
     private String nome;
     private String especie;
     private int idade;
@@ -10,7 +15,7 @@ public class Animal {
     private Cliente dono; // Associação com a classe Cliente
     private boolean vacinado;
 
-    // Construtor da classe Animal
+    // Construtor
     public Animal(String nome, String especie, int idade, String raca, String sexo, double peso, Cliente dono, boolean vacinado) {
         this.nome = nome;
         this.especie = especie;
@@ -22,13 +27,17 @@ public class Animal {
         this.vacinado = vacinado;
     }
 
-    // Metodo que exibe a ficha do animal
+    // Exibe os dados do animal
     public void exibirFicha() {
-        System.out.println("Animal: " + nome + ", Espécie: " + especie + ", Raça: " + raca + ", Sexo: " + sexo +
-                ", Peso: " + peso + "kg" + ", Vacinado: " + (vacinado ? "Sim" : "Não"));
+        System.out.println("Animal: " + nome +
+                ", Espécie: " + especie +
+                ", Raça: " + raca +
+                ", Sexo: " + sexo +
+                ", Peso: " + peso + "kg" +
+                ", Vacinado: " + (vacinado ? "Sim" : "Não"));
     }
 
-    // Metodo que vacina o animal  se ainda não estiver vacinado
+    // Marca o animal como vacinado
     public void vacinar() {
         if (!vacinado) {
             vacinado = true;
@@ -38,13 +47,12 @@ public class Animal {
         }
     }
 
-    // Metodo que atualiza o peso do animal
+    // Atualiza o peso
     public void atualizarPeso(double novoPeso) {
         this.peso = novoPeso;
     }
 
     // Getters e Setters
-
     public String getNome() {
         return nome;
     }
@@ -105,12 +113,13 @@ public class Animal {
         this.vacinado = vacinado;
     }
 
-    // Metodo que retorna os dados do animal no formato CSV
+    // Retorna os dados no formato CSV
     public String toCSV() {
-        return nome + ";" + especie + ";" + idade + ";" + raca + ";" + sexo + ";" + peso + ";" + vacinado + ";" + (dono != null ? dono.getCpf() : "sem_dono");
+        return nome + ";" + especie + ";" + idade + ";" + raca + ";" + sexo + ";" + peso + ";" + vacinado + ";" +
+                (dono != null ? dono.getCpf() : "sem_dono");
     }
 
-    // Metodo que cria um objeto Animal a partir do CSV e uma lista de clientes
+    // Cria um objeto Animal a partir de uma linha CSV e uma lista de clientes
     public static Animal fromCSV(String linha, ArrayList<Cliente> listaClientes) {
         String[] partes = linha.split(";");
         String nome = partes[0];
@@ -122,7 +131,7 @@ public class Animal {
         boolean vacinado = Boolean.parseBoolean(partes[6]);
         String cpfDono = partes[7];
 
-        // Busca o cliente na lista a partir do CPF
+        // Busca o cliente correspondente pelo CPF
         Cliente donoEncontrado = null;
         for (Cliente c : listaClientes) {
             if (c.getCpf().equals(cpfDono)) {
@@ -131,11 +140,10 @@ public class Animal {
             }
         }
 
-        // Cria e retorna o novo objeto Animal com os dados lidos
         return new Animal(nome, especie, idade, raca, sexo, peso, donoEncontrado, vacinado);
     }
 
-    // Sobrescrita do metodo toString para exibir os dados no formato CSV
+    // toString sobrescrito para retornar o mesmo formato do CSV
     @Override
     public String toString() {
         return toCSV();

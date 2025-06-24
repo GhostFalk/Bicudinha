@@ -4,17 +4,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class TelaGerenciarVeterinario extends JFrame {
-    // Componentes
     private JComboBox<String> comboSugestoes;
     private JTextField campoBuscaCrmv;
     private JTextField campoNome, campoEmail, campoCrmv, campoTelefone;
     private JComboBox<String> campoEspecialidade;
     private JButton botaoAtualizar, botaoExcluir;
 
-    // Lista de veterinários
     private ArrayList<Veterinario> listaVeterinarios;
 
-    // Construtor da tela
     public TelaGerenciarVeterinario(ArrayList<Veterinario> veterinarios) {
         listaVeterinarios = veterinarios;
 
@@ -44,7 +41,6 @@ public class TelaGerenciarVeterinario extends JFrame {
         painelPrincipal.add(titulo);
         painelPrincipal.add(Box.createVerticalStrut(10));
 
-        // Painel de busca por CRMV
         JPanel painelBusca = new JPanel(new GridBagLayout());
         painelBusca.setBackground(corFundo);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -76,7 +72,6 @@ public class TelaGerenciarVeterinario extends JFrame {
 
         painelPrincipal.add(painelBusca);
 
-        // Formulário
         JPanel painelFormulario = new JPanel(new GridLayout(6, 2, 10, 10));
         painelFormulario.setMaximumSize(new Dimension(600, 250));
         painelFormulario.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
@@ -100,7 +95,6 @@ public class TelaGerenciarVeterinario extends JFrame {
 
         painelPrincipal.add(painelFormulario);
 
-        // Botões
         JPanel painelBotoes = new JPanel();
         painelBotoes.setBackground(corFundo);
         botaoAtualizar = new JButton("Atualizar");
@@ -116,7 +110,6 @@ public class TelaGerenciarVeterinario extends JFrame {
         painelBotoes.add(botaoExcluir);
         painelPrincipal.add(painelBotoes);
 
-        // Imagens de rodapé
         JPanel painelInferior = new JPanel(new BorderLayout());
         painelInferior.setBackground(corFundo);
         painelInferior.add(new JLabel(new ImageIcon(new ImageIcon("hamster.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH))), BorderLayout.WEST);
@@ -126,7 +119,6 @@ public class TelaGerenciarVeterinario extends JFrame {
 
         add(painelPrincipal);
 
-        // Evento de digitação no CRMV
         campoBuscaCrmv.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 String texto = campoBuscaCrmv.getText().trim();
@@ -138,14 +130,11 @@ public class TelaGerenciarVeterinario extends JFrame {
                     }
                 }
                 comboSugestoes.setVisible(comboSugestoes.getItemCount() > 1);
-                if (comboSugestoes.isVisible()) {
-                    comboSugestoes.showPopup();
-                }
+                if (comboSugestoes.isVisible()) comboSugestoes.showPopup();
                 campoBuscaCrmv.requestFocusInWindow();
             }
         });
 
-        // Evento de seleção no combo
         comboSugestoes.addActionListener(e -> {
             String selecionado = (String) comboSugestoes.getSelectedItem();
             if (selecionado != null && !selecionado.equals("Selecione um veterinário...")) {
@@ -163,7 +152,6 @@ public class TelaGerenciarVeterinario extends JFrame {
             }
         });
 
-        // Botão atualizar
         botaoAtualizar.addActionListener(e -> {
             String crmvBusca = campoCrmv.getText().trim();
             for (Veterinario v : listaVeterinarios) {
@@ -173,13 +161,13 @@ public class TelaGerenciarVeterinario extends JFrame {
                     v.setTelefone(campoTelefone.getText());
                     JOptionPane.showMessageDialog(this, "Dados atualizados com sucesso!");
                     CSVUtils.salvarCSV("veterinarios.csv", listaVeterinarios);
+                    PersistenciaUtils.salvarLista("veterinarios.ser", listaVeterinarios);
                     return;
                 }
             }
             JOptionPane.showMessageDialog(this, "Veterinário não encontrado.");
         });
 
-        // Botão excluir
         botaoExcluir.addActionListener(e -> {
             String crmvBusca = campoCrmv.getText().trim();
             Veterinario remover = null;
@@ -198,6 +186,7 @@ public class TelaGerenciarVeterinario extends JFrame {
                     comboSugestoes.removeAllItems(); comboSugestoes.setVisible(false);
                     JOptionPane.showMessageDialog(this, "Veterinário removido.");
                     CSVUtils.salvarCSV("veterinarios.csv", listaVeterinarios);
+                    PersistenciaUtils.salvarLista("veterinarios.ser", listaVeterinarios);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Veterinário não encontrado.");

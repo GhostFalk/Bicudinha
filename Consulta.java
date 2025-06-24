@@ -1,10 +1,13 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Consulta {
+public class Consulta implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private LocalDateTime data;         // Data e hora da consulta
     private LocalTime hora;             // Hora separada
     private Animal animal;              // Animal atendido
@@ -26,7 +29,7 @@ public class Consulta {
         this.chamado = false;
     }
 
-    // Exibe os dados resumidos da consulta
+    // Exibe dados resumidos
     public void exibirConsulta() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         System.out.println("Consulta em: " + data.format(formatter) +
@@ -34,12 +37,12 @@ public class Consulta {
                 " | Veterinário: " + veterinario.getNome());
     }
 
-    // Permite editar apenas o diagnóstico
+    // Edita diagnóstico
     public void editarConsulta(String novoDiagnostico) {
         this.diagnostico = novoDiagnostico;
     }
 
-    // Retorna detalhes resumidos da consulta
+    // Retorna detalhes
     public String detalhesConsulta() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         return "Data: " + data.format(formatter) +
@@ -47,7 +50,7 @@ public class Consulta {
                 ", Retorno: " + (foiRetorno ? "Sim" : "Não");
     }
 
-    // Atualiza a consulta como sendo de retorno
+    // Marcar como retorno
     public void marcarRetorno(LocalDate novaData, LocalTime novaHora) {
         this.data = LocalDateTime.of(novaData, novaHora);
         this.hora = novaHora;
@@ -68,7 +71,7 @@ public class Consulta {
     public void setMedicamento(String medicamento) { this.medicamento = medicamento; }
     public void setChamado(boolean chamado) { this.chamado = chamado; }
 
-    // Converte os dados da consulta em formato CSV
+    // Para salvar como CSV
     public String toCSV() {
         return data.toString() + ";" +
                 hora.toString() + ";" +
@@ -80,12 +83,11 @@ public class Consulta {
                 chamado;
     }
 
-    // Cria um objeto Consulta a partir de uma linha CSV
+    // Reconstrói a partir do CSV
     public static Consulta fromCSV(String linha, ArrayList<Animal> listaAnimais, ArrayList<Veterinario> listaVeterinarios) {
         String[] partes = linha.split(";");
         if (partes.length < 8) return null;
 
-        // Extrai os dados
         LocalDateTime data = LocalDateTime.parse(partes[0]);
         LocalTime hora = LocalTime.parse(partes[1]);
         String nomeAnimal = partes[2];
@@ -95,7 +97,6 @@ public class Consulta {
         String medicamento = partes[6];
         boolean chamado = Boolean.parseBoolean(partes[7]);
 
-        // Busca o animal
         Animal animalEncontrado = null;
         for (Animal a : listaAnimais) {
             if (a.getNome().equalsIgnoreCase(nomeAnimal)) {
@@ -104,7 +105,6 @@ public class Consulta {
             }
         }
 
-        // Busca o veterinário pelo CRMV
         Veterinario vetEncontrado = null;
         for (Veterinario v : listaVeterinarios) {
             if (v.getCrmv().equals(crmvVeterinario)) {
@@ -113,19 +113,14 @@ public class Consulta {
             }
         }
 
-        // Verifica se encontrou ambos
-        if (animalEncontrado == null || vetEncontrado == null) {
-            return null;
-        }
+        if (animalEncontrado == null || vetEncontrado == null) return null;
 
-        // Cria e retorna a consulta
         Consulta c = new Consulta(data, hora, animalEncontrado, vetEncontrado, diagnostico, foiRetorno);
         c.setMedicamento(medicamento);
         c.setChamado(chamado);
         return c;
     }
 
-    // Para salvar com CSVUtils
     @Override
     public String toString() {
         return toCSV();
